@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Penumpang Jogja 2025</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: rgba(0,0,0,0.7);
+      border-radius: 12px;
+      margin-top: 3rem;
+    }
+    h1 {
+      text-align: center;
+      cursor: pointer;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: none;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    table {
+      width: 100%;
+      margin-top: 1rem;
+      border-collapse: collapse;
+      background: white;
+      color: black;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    .delete-btn {
+      cursor: pointer;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="judul">Pendataan Penumpang</h1>
+    <div id="form-section">
+      <label for="nama">Nama Lengkap:</label>
+      <input type="text" id="nama" required placeholder="Tulis nama lengkapmu">
+
+      <label for="ikut">Apakah kamu ikut?</label>
+      <select id="ikut">
+        <option value="Ikut">Ikut</option>
+        <option value="Tidak Ikut">Tidak Ikut</option>
+      </select>
+
+      <div id="nik-section">
+        <label for="nik">NIK:</label>
+        <input type="text" id="nik" required placeholder="Masukkan NIK (16 digit)">
+      </div>
+
+      <button onclick="submitForm()">Kirim</button>
+    </div>
+    <div id="thanks" class="hidden">
+      <p>Siap, test! Data kamu udah kami catat. Terimakasih atas kerjasamanya, saya (alfi) apresiasi tingkah anda melakukan pendataan😈😈👍</p>
+    </div>
+    <div id="data-section" class="hidden">
+      <h2>Total Penumpang: <span id="total-count">0</span>/15</h2>
+      <table id="data-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Ikut</th>
+            <th>Nama</th>
+            <th>NIK</th>
+            <th>🗑️</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const data = [];
+    let tapCount = 0;
+    let tapTimer;
+
+    function submitForm() {
+      const nama = document.getElementById("nama").value.trim();
+      const ikut = document.getElementById("ikut").value;
+      const nik = document.getElementById("nik").value.trim();
+
+      if (nama.split(" ").length < 2) {
+        alert("Isi nama lengkap, ya!");
+        return;
+      }
+
+      if (nik.length !== 16 || isNaN(nik)) {
+        alert("NIK belum lengkap nih (harus 16 digit angka).");
+        return;
+      }
+
+      data.push({ nama, ikut, nik });
+      document.getElementById("form-section").classList.add("hidden");
+      document.getElementById("thanks").classList.remove("hidden");
+      updateTable();
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector("#data-table tbody");
+      tbody.innerHTML = "";
+      data.forEach((item, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${item.ikut}</td>
+          <td>${item.nama}</td>
+          <td>${item.nik}</td>
+          <td class="delete-btn" onclick="deleteEntry(${index})">🗑️</td>
+        `;
+        tbody.appendChild(row);
+      });
+      document.getElementById("total-count").textContent = data.length;
+    }
+
+    function deleteEntry(index) {
+      data.splice(index, 1);
+      updateTable();
+    }
+
+    document.getElementById("judul").addEventListener("click", () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => { tapCount = 0; }, 1000);
+      if (tapCount >= 3) {
+        document.getElementById("data-section").classList.toggle("hidden");
+        tapCount = 0;
+      }
+    });
+  </script>
+</body>
+</html>
